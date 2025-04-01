@@ -61,3 +61,29 @@
     </script>
 </body>
 </html>
+<script>
+    async function convertImage() {
+        const preview = document.querySelector('#preview img');
+        if (!preview) return alert("الرجاء رفع صورة أولًا!");
+
+        const formData = new FormData();
+        formData.append("image", preview.src);
+
+        try {
+            const response = await fetch("https://api.deepai.org/api/deepdream", {
+                method: "POST",
+                headers: {
+                    "Api-Key": "417e5ef1-0cfc-4960-9785-b24f4b61e577" 
+                },
+                body: formData
+            });
+
+            const data = await response.json();
+            document.getElementById('converted').innerHTML = `<img src="${data.output_url}" alt="Converted Image">`;
+        } catch (error) {
+            console.error("Error:", error);
+            alert("حدث خطأ أثناء المعالجة.");
+        }
+    }
+</script>
+
