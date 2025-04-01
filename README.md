@@ -48,3 +48,41 @@
                 reader.onload = function(e) {
                     document.getElementById('preview').innerHTML = `<img src="${e.target.result}" alt="Uploaded Image">`;
                 }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        async function convertImage() {
+            const preview = document.querySelector('#preview img');
+            if (!preview) return alert("الرجاء رفع صورة أولًا!");
+
+            const formData = new FormData();
+            formData.append("image", preview.src); // تأكد من طريقة إضافة الصورة بشكل صحيح
+
+            try {
+                const response = await fetch("https://api.deepai.org/api/deepdream", {
+                    method: "POST",
+                    headers: {
+                        "Api-Key": "417e5ef1-0cfc-4960-9785-b24f4b61e577" // استبدل هذا بمفتاحك
+                    },
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error('هناك خطأ في الاتصال بـ API');
+                }
+
+                const data = await response.json();
+                if (data && data.output_url) {
+                    document.getElementById('converted').innerHTML = `<img src="${data.output_url}" alt="Converted Image">`;
+                } else {
+                    throw new Error('لم يتم العثور على الصورة المحولة');
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert("حدث خطأ أثناء المعالجة: " + error.message);
+            }
+        }
+    </script>
+</body>
+</html>
